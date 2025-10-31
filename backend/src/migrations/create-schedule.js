@@ -15,15 +15,15 @@ module.exports = {
             },
             name: {
                 type: Sequelize.STRING,
-                allowNull: false
+                allowNull: true
             },
             workDate: {
                 type: Sequelize.DATE,
-                allowNull: false
+                allowNull: true
             },
             shift: {
                 type: Sequelize.STRING,
-                allowNull: false
+                allowNull: true
             },
             status: {
                 type: Sequelize.STRING,

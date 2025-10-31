@@ -23,15 +23,15 @@ module.exports = {
             },
             startTime: {
                 type: Sequelize.DATE,
-                allowNull: false
+                allowNull: true
             },
             endTime: {
                 type: Sequelize.DATE,
-                allowNull: false
+                allowNull: true
             },
             room: {
                 type: Sequelize.STRING,
-                allowNull: false
+                allowNull: true
             },
             capacity: {
                 type: Sequelize.INTEGER,

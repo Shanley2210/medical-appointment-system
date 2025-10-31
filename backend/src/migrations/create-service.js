@@ -11,19 +11,19 @@ module.exports = {
             },
             name: {
                 type: Sequelize.STRING,
-                allowNull: false
+                allowNull: true
             },
             description: {
                 type: Sequelize.TEXT,
-                allowNull: false
+                allowNull: true
             },
             durationMinutes: {
                 type: Sequelize.INTEGER,
-                allowNull: false
+                allowNull: true
             },
             price: {
                 type: Sequelize.DECIMAL,
-                allowNull: false
+                allowNull: true
             },
             status: {
                 type: Sequelize.STRING,

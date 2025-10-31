@@ -8,11 +8,6 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
-            User.belongsTo(models.Branch, {
-                foreignKey: 'branchId',
-                as: 'branch'
-            });
-
             User.hasOne(models.Admin, {
                 foreignKey: 'userId',
                 as: 'admin'
@@ -36,7 +31,6 @@ module.exports = (sequelize, DataTypes) => {
     }
     User.init(
         {
-            branchId: DataTypes.INTEGER,
             name: DataTypes.STRING,
             email: DataTypes.STRING,
             phone: DataTypes.STRING,

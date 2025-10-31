@@ -9,13 +9,9 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            branchId: {
-                type: Sequelize.INTEGER,
-                allowNull: true
-            },
             name: {
                 type: Sequelize.STRING,
-                allowNull: false
+                allowNull: true
             },
             email: {
                 type: Sequelize.STRING,

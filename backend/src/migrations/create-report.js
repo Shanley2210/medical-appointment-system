@@ -15,27 +15,27 @@ module.exports = {
             },
             reportType: {
                 type: Sequelize.STRING,
-                allowNull: false
+                allowNull: true
             },
             fromDate: {
                 type: Sequelize.DATE,
-                allowNull: false
+                allowNull: true
             },
             toDate: {
                 type: Sequelize.DATE,
-                allowNull: false
+                allowNull: true
             },
             createBy: {
                 type: Sequelize.STRING,
-                allowNull: false
+                allowNull: true
             },
             generatedAt: {
                 type: Sequelize.DATE,
-                allowNull: false
+                allowNull: true
             },
             dataJson: {
                 type: Sequelize.JSON,
-                allowNull: false
+                allowNull: true
             },
             createdAt: {
                 allowNull: false,

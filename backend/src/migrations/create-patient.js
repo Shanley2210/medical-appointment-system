@@ -15,11 +15,11 @@ module.exports = {
             },
             dob: {
                 type: Sequelize.DATE,
-                allowNull: false
+                allowNull: true
             },
             gender: {
                 type: Sequelize.STRING,
-                allowNull: false
+                allowNull: true
             },
             insurance: {
                 type: Sequelize.STRING,
