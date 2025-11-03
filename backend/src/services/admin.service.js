@@ -155,7 +155,7 @@ const createHopistalAdminService = (
     });
 };
 
-const createUserService = (data) => {
+const createUserService = (data, imageFilename) => {
     return new Promise(async (resolve, reject) => {
         const trans = await db.sequelize.transaction();
         const { name, email, phone, password, confirmPassword, role } = data;
@@ -181,6 +181,10 @@ const createUserService = (data) => {
                     errMessage: 'Email or phone number already in use'
                 });
             }
+
+            const imagePath = path
+                .join('/uploads', 'users', imageFilename)
+                .replace(/\\/g, '/');
 
             const hashPassword = await bcrypt.hash(password, 10);
 
@@ -215,25 +219,17 @@ const createUserService = (data) => {
                         userId: newUser.id,
                         specialtyId: specialtyId,
                         room: room,
+                        image: imagePath,
                         status: 'active'
                     },
                     { transaction: trans }
                 );
             } else if (role === 'receptionist') {
-                const { status } = data;
-
-                if (!status) {
-                    await trans.rollback();
-                    return resolve({
-                        errCode: 1,
-                        errMessage: 'Missing required parameters'
-                    });
-                }
-
                 await db.Receptionist.create(
                     {
                         userId: newUser.id,
-                        status: status
+                        image: imagePath,
+                        status: 'active'
                     },
                     { transaction: trans }
                 );
@@ -252,7 +248,7 @@ const createUserService = (data) => {
     });
 };
 
-const updateUserService = (userId, data) => {
+const updateUserService = (userId, data, imageFile) => {
     return new Promise(async (resolve, reject) => {
         const trans = await db.sequelize.transaction();
 
@@ -314,11 +310,22 @@ const updateUserService = (userId, data) => {
             });
 
             if (user.role === 'doctor') {
+                const doctor = await db.Doctor.findOne({
+                    where: { userId: userId },
+                    transaction: trans
+                });
+
+                const oldImagePath = doctor.image;
+
                 const doctorData = {};
                 if (data.specialtyId !== undefined)
                     doctorData.specialtyId = data.specialtyId;
                 if (data.room !== undefined) doctorData.room = data.room;
                 if (data.status !== undefined) doctorData.status = data.status;
+                if (imageFile !== undefined)
+                    doctorData.image = path
+                        .join('/uploads', 'doctors', imageFile.filename)
+                        .replace(/\\/g, '/');
 
                 if (Object.keys(doctorData).length > 0) {
                     await db.Doctor.update(doctorData, {
@@ -326,16 +333,49 @@ const updateUserService = (userId, data) => {
                         transaction: trans
                     });
                 }
+
+                if (imageFile && oldImagePath) {
+                    const fullOldImagePath = path.join(
+                        __dirname,
+                        '..',
+                        oldImagePath
+                    );
+                    if (fs.existsSync(fullOldImagePath)) {
+                        fs.unlinkSync(fullOldImagePath);
+                    }
+                }
             } else if (user.role === 'receptionist') {
+                const receptionist = await db.Receptionist.findOne({
+                    where: { userId: userId },
+                    transaction: trans
+                });
+
+                const oldImagePath = receptionist.image;
+
                 const receptionistData = {};
                 if (data.status !== undefined)
                     receptionistData.status = data.status;
+                if (imageFile !== undefined)
+                    receptionistData.image = path
+                        .join('/uploads', 'receptionists', imageFile.filename)
+                        .replace(/\\/g, '/');
 
                 if (Object.keys(receptionistData).length > 0) {
                     await db.Receptionist.update(receptionistData, {
                         where: { userId: userId },
                         transaction: trans
                     });
+                }
+
+                if (imageFile && oldImagePath) {
+                    const fullOldImagePath = path.join(
+                        __dirname,
+                        '..',
+                        oldImagePath
+                    );
+                    if (fs.existsSync(fullOldImagePath)) {
+                        fs.unlinkSync(fullOldImagePath);
+                    }
                 }
             }
 
@@ -388,15 +428,47 @@ const deleteUserService = (userId, IdDel) => {
             }
 
             if (RoleDel === 'doctor') {
+                const doctor = await db.Doctor.findOne({
+                    where: { userId: IdDel },
+                    transaction: trans
+                });
+
+                const oldImagePath = doctor.image;
+
                 await db.Doctor.destroy({
                     where: { userId: IdDel },
                     transaction: trans
                 });
+
+                const fullOldImagePath = path.join(
+                    __dirname,
+                    '..',
+                    oldImagePath
+                );
+                if (fs.existsSync(fullOldImagePath)) {
+                    fs.unlinkSync(fullOldImagePath);
+                }
             } else if (RoleDel === 'receptionist') {
+                const receptionist = await db.Receptionist.findOne({
+                    where: { userId: IdDel },
+                    transaction: trans
+                });
+
+                const oldImagePath = receptionist.image;
+
                 await db.Receptionist.destroy({
                     where: { userId: IdDel },
                     transaction: trans
                 });
+
+                const fullOldImagePath = path.join(
+                    __dirname,
+                    '..',
+                    oldImagePath
+                );
+                if (fs.existsSync(fullOldImagePath)) {
+                    fs.unlinkSync(fullOldImagePath);
+                }
             } else if (RoleDel === 'patient') {
                 await db.Patient.destroy({
                     where: { userId: IdDel },

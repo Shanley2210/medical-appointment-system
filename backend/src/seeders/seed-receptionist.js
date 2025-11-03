@@ -6,18 +6,21 @@ module.exports = {
         return queryInterface.bulkInsert('Receptionists', [
             {
                 userId: '18',
+                image: 'image.png',
                 status: 'active',
                 createdAt: new Date(),
                 updatedAt: new Date()
             },
             {
                 userId: '19',
+                image: 'image.png',
                 status: 'active',
                 createdAt: new Date(),
                 updatedAt: new Date()
             },
             {
                 userId: '20',
+                image: 'image.png',
                 status: 'active',
                 createdAt: new Date(),
                 updatedAt: new Date()

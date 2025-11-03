@@ -30,6 +30,7 @@ router.post(
     '/users',
     authMiddleware.verifyToken,
     authMiddleware.verifyAdmin,
+    uploadMiddleware.createUploadImgaeDir('users').single('image'),
     adminController.createUserController
 );
 
@@ -37,6 +38,7 @@ router.put(
     '/users/:id',
     authMiddleware.verifyToken,
     authMiddleware.verifyAdmin,
+    uploadMiddleware.createUploadImgaeDir('users').single('image'),
     adminController.updateUserController
 );
 

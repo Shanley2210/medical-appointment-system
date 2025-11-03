@@ -80,17 +80,51 @@ const createUserController = async (req, res) => {
             !confirmPassword ||
             !role
         ) {
+            if (req.file) {
+                fs.unlink(req.file.path, (err) => {
+                    if (err)
+                        console.error(
+                            'Failed to cleanup uploaded file on error:',
+                            err
+                        );
+                });
+            }
+
             return res.status(200).json({
                 errCode: 1,
                 errMessage: 'Missing required parameters'
             });
         }
 
-        const response = await adminService.createUserService(req.body);
+        if (!req.file) {
+            return res.status(200).json({
+                errCode: 2,
+                errMessage: 'Missing required image'
+            });
+        }
+
+        const imageFilename = req.file.filename;
+
+        const response = await adminService.createUserService(
+            req.body,
+            imageFilename
+        );
+
+        if (response.errCode !== 0) {
+            fs.unlinkSync(
+                path.join(__dirname, '../uploads/users', imageFilename)
+            );
+        }
 
         return res.status(200).json(response);
     } catch (e) {
         console.log('Error in createUser:', e);
+        if (e.code === 'LIMIT_FILE_SIZE') {
+            return res.status(200).json({
+                errCode: -2,
+                errMessage: 'File size exceeds the limit'
+            });
+        }
         return res.status(500).json({
             errCode: -1,
             errMessage: 'Error from server'
@@ -102,15 +136,24 @@ const updateUserController = async (req, res) => {
     try {
         const userId = req.params.id;
         const data = req.body;
+        const imageFile = req.file;
 
-        if (!userId) {
+        if (!userId || !data) {
             return res.status(200).json({
                 errCode: 1,
                 errMessage: 'Missing required parameters'
             });
         }
 
-        const response = await adminService.updateUserService(userId, data);
+        const response = await adminService.updateUserService(
+            userId,
+            data,
+            imageFile
+        );
+
+        if (imageFile && response.errCode !== 0) {
+            fs.unlinkSync(imageFile.path);
+        }
 
         return res.status(200).json(response);
     } catch (e) {
