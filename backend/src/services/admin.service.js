@@ -790,6 +790,37 @@ const deleteServiceService = (serviceId) => {
     });
 };
 
+const getSchedulesService = (doctorId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const schedules = await db.Schedule.findAll({
+                where: { doctorId: doctorId },
+                include: [
+                    {
+                        model: db.Slot,
+                        as: 'slots'
+                    }
+                ]
+            });
+
+            if (!schedules) {
+                return resolve({
+                    errCode: 2,
+                    errMessage: 'Schedule not found'
+                });
+            }
+
+            return resolve({
+                errCode: 0,
+                message: 'Get schedules successful',
+                data: schedules
+            });
+        } catch (e) {
+            return reject(e);
+        }
+    });
+};
+
 const createScheduleAndSlotService = (
     doctorId,
     name,
@@ -892,6 +923,47 @@ const createScheduleAndSlotService = (
     });
 };
 
+const deleteScheduleService = (scheduleId) => {
+    return new Promise(async (resolve, reject) => {
+        const trans = await db.sequelize.transaction();
+
+        try {
+            const schedule = await db.Schedule.findOne({
+                where: { id: scheduleId },
+                transaction: trans
+            });
+
+            if (!schedule) {
+                await trans.rollback();
+                return resolve({
+                    errCode: 2,
+                    errMessage: 'Schedule not found'
+                });
+            }
+
+            const delSlots = await db.Slot.destroy({
+                where: { scheduleId: scheduleId },
+                transaction: trans
+            });
+
+            await db.Schedule.destroy({
+                where: { id: scheduleId },
+                transaction: trans
+            });
+
+            await trans.commit();
+
+            return resolve({
+                errCode: 0,
+                message: `Delete schedule successful. Deleted ${delSlots} slots.`
+            });
+        } catch (e) {
+            trans.rollback();
+            return reject(e);
+        }
+    });
+};
+
 module.exports = {
     getUsersService,
     getUserByIdService,
@@ -906,5 +978,7 @@ module.exports = {
     createServiceService,
     updateServiceService,
     deleteServiceService,
-    createScheduleAndSlotService
+    createScheduleAndSlotService,
+    deleteScheduleService,
+    getSchedulesService
 };

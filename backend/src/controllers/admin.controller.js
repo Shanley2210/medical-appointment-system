@@ -395,6 +395,25 @@ const deleteServiceController = async (req, res) => {
     }
 };
 
+const getSchedulesController = async (req, res) => {
+    try {
+        const doctorId = req.params.doctorId;
+
+        if (!doctorId) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: 'Missing required parameters'
+            });
+        }
+
+        const response = await adminService.getSchedulesService(doctorId);
+
+        return res.status(200).json(response);
+    } catch (e) {
+        console.log('Error in getSchedules:', e);
+    }
+};
+
 const createScheduleController = async (req, res) => {
     try {
         const doctorId = req.params.doctorId;
@@ -425,6 +444,30 @@ const createScheduleController = async (req, res) => {
     }
 };
 
+const deleteScheduleController = async (req, res) => {
+    try {
+        const scheduleId = req.params.id;
+
+        if (!scheduleId) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: 'Missing required parameters'
+            });
+        }
+
+        const response = await adminService.deleteScheduleService(scheduleId);
+
+        return res.status(200).json(response);
+    } catch (e) {
+        console.log('Error in deleteSchedule:', e);
+        return res.status(500).json({
+            errCode: -1,
+            errMessage: 'Error from server'
+        });
+    }
+    s;
+};
+
 module.exports = {
     getUsersController,
     getUserByIdController,
@@ -439,5 +482,7 @@ module.exports = {
     createServiceController,
     updateServiceController,
     deleteServiceController,
-    createScheduleController
+    createScheduleController,
+    deleteScheduleController,
+    getSchedulesController
 };
