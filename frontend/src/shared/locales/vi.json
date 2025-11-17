@@ -1,3 +1,11 @@
 {
-  "welcome": "Xin chào"
+    "login": {},
+    "register": {},
+    "verifyOtp": {},
+    "forgotPassword": {},
+    "resetPassword": {},
+    "adminSideBar": {
+        "db": "Bảng điều khiển",
+        "ap": "Lịch hẹn"
+    }
 }

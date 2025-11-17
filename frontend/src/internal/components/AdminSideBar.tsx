@@ -4,21 +4,23 @@ import { CarryOutOutlined, HomeOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { ThemeContext } from '@/shared/contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 export default function AdminSideBar() {
     const navigate = useNavigate();
     const { isDark } = useContext(ThemeContext);
+    const { t } = useTranslation();
 
     const items = [
         {
             key: 'dashboard',
             icon: <HomeOutlined />,
-            label: 'DashBoard'
+            label: t('adminSideBar.db')
         },
         {
             key: 'appointments',
             icon: <CarryOutOutlined />,
-            label: 'Appointments'
+            label: t('adminSideBar.ap')
         }
     ];
 
