@@ -1,7 +1,11 @@
+import AppRouter from '@routers/AppRouter';
+import ToastProvider from '@shared/contexts/ToastProvider';
+
 function App() {
     return (
         <>
-            <h1 className='text-red-800'>Hello with dash</h1>
+            <AppRouter />;
+            <ToastProvider />
         </>
     );
 }

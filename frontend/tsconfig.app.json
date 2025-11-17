@@ -26,7 +26,11 @@
 
         "baseUrl": ".",
         "paths": {
-            "@/*": ["./src/*"]
+            "@/*": ["./src/*"],
+            "@internal/*": ["src/internal/*"],
+            "@patient/*": ["src/patient/*"],
+            "@shared/*": ["src/shared/*"],
+            "@routers/*": ["src/routers/*"]
         }
     },
     "include": ["src"]

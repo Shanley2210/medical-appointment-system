@@ -223,7 +223,15 @@ const loginService = (emailOrPhone, password) => {
                 where: {
                     [Op.or]: [{ email: emailOrPhone }, { phone: emailOrPhone }],
                     verify: true
-                }
+                },
+                include: [
+                    {
+                        model: db.Role,
+                        as: 'roles',
+                        attributes: ['id', 'name'],
+                        through: { attributes: [] }
+                    }
+                ]
             });
 
             if (!user) {
@@ -244,6 +252,13 @@ const loginService = (emailOrPhone, password) => {
                 });
             }
 
+            const userData = {
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                role: user.roles[0]?.id
+            };
+
             const tokens = generateTokens(user);
             user.refreshToken = tokens.refreshToken;
             await user.save();
@@ -251,7 +266,8 @@ const loginService = (emailOrPhone, password) => {
             return resolve({
                 errCode: 0,
                 message: 'Login successful',
-                tokens: tokens
+                tokens: tokens,
+                user: userData
             });
         } catch (e) {
             return reject(e);

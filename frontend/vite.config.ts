@@ -12,7 +12,7 @@ export default defineConfig({
             '@internal': path.resolve(__dirname, './src/internal'),
             '@patient': path.resolve(__dirname, './src/patient'),
             '@shared': path.resolve(__dirname, './src/shared'),
-            '@router': path.resolve(__dirname, './src/router')
+            '@routers': path.resolve(__dirname, './src/routers')
         }
     }
 });
