@@ -417,7 +417,15 @@ const refreshTokenService = (refreshToken) => {
 
                     const userId = decoded.id;
                     const user = await db.User.findOne({
-                        where: { id: userId, verify: true }
+                        where: { id: userId, verify: true },
+                        include: [
+                            {
+                                model: db.Role,
+                                as: 'roles',
+                                attributes: ['id', 'name'],
+                                through: { attributes: [] }
+                            }
+                        ]
                     });
 
                     const newTokens = jwt.sign(
@@ -429,10 +437,18 @@ const refreshTokenService = (refreshToken) => {
                         { expiresIn: '1h' }
                     );
 
+                    const userData = {
+                        name: user.name,
+                        email: user.email,
+                        phone: user.phone,
+                        role: user.roles[0]?.id
+                    };
+
                     return resolve({
                         errCode: 0,
                         message: 'Token refreshed successfully.',
-                        accessToken: newTokens
+                        accessToken: newTokens,
+                        user: userData
                     });
                 }
             );

@@ -456,7 +456,6 @@ const updatereceptionistController = async (req, res) => {
         if (imageFile && response.errCode !== 0) {
             fs.unlinkSync(imageFile.path);
         }
-
         return res.status(200).json(response);
     } catch (e) {
         console.log('Error in updateReceptionist:', e);
@@ -483,14 +482,16 @@ const createSpecialtyController = async (req, res) => {
             }
             return res.status(200).json({
                 errCode: 1,
-                errMessage: 'Missing required parameters'
+                errEnMessage: 'Missing required parameters',
+                errViMessage: 'Thiếu tham số bắt buộc'
             });
         }
 
         if (!req.file) {
             return res.status(200).json({
                 errCode: 2,
-                errMessage: 'Missing required image'
+                errEnMessage: 'Missing required image',
+                errViMessage: 'Thiếu hình ảnh bắt buộc'
             });
         }
 

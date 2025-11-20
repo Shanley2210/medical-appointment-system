@@ -4,9 +4,8 @@ import {
     type PayloadAction
 } from '@reduxjs/toolkit';
 import api from '../apis/api';
-import type { RootState } from './store';
 
-interface User {
+export interface User {
     id: number;
     name: string;
     email: string;
@@ -24,6 +23,12 @@ interface LoginSuccessPayload {
     errCode: number;
     message: string;
     tokens: Tokens;
+}
+
+interface RefreshTokenSuccessPayload {
+    accessToken: string;
+    user: User;
+    refreshToken: string;
 }
 
 interface AuthState {
@@ -73,7 +78,7 @@ export const login = createAsyncThunk<
 });
 
 export const refreshToken = createAsyncThunk<
-    Tokens,
+    RefreshTokenSuccessPayload,
     string,
     { rejectValue: string }
 >('auth/refreshToken', async (oldRefreshToken, { rejectWithValue }) => {
@@ -82,13 +87,14 @@ export const refreshToken = createAsyncThunk<
             refreshToken: oldRefreshToken
         });
 
-        const { accessToken, message, errCode } = response.data;
+        const { accessToken, user, message, errCode } = response.data;
 
         if (errCode === 0 && accessToken) {
             return {
                 accessToken,
+                user,
                 refreshToken: oldRefreshToken
-            } as Tokens;
+            } as RefreshTokenSuccessPayload;
         }
 
         return rejectWithValue(message || 'Refresh token failed');
@@ -143,7 +149,6 @@ export const authSlice = createSlice({
                 (state, action: PayloadAction<LoginSuccessPayload>) => {
                     state.loading = false;
                     state.accessToken = action.payload.tokens.accessToken;
-                    state.user = action.payload.user;
                     state.refreshToken = action.payload.tokens.refreshToken;
                     state.user = action.payload.user;
                     state.isAuthenticated = true;
@@ -155,6 +160,7 @@ export const authSlice = createSlice({
                 state.isAuthenticated = false;
                 state.accessToken = null;
                 state.refreshToken = null;
+                state.user = null;
             })
             .addCase(refreshToken.pending, (state) => {
                 state.loading = true;
@@ -162,9 +168,10 @@ export const authSlice = createSlice({
             })
             .addCase(
                 refreshToken.fulfilled,
-                (state, action: PayloadAction<Tokens>) => {
+                (state, action: PayloadAction<RefreshTokenSuccessPayload>) => {
                     state.loading = false;
                     state.accessToken = action.payload.accessToken;
+                    state.user = action.payload.user;
                     state.isAuthenticated = true;
                 }
             )
@@ -174,6 +181,7 @@ export const authSlice = createSlice({
                 state.isAuthenticated = false;
                 state.accessToken = null;
                 state.refreshToken = null;
+                state.user = null;
                 localStorage.removeItem('refreshToken');
             })
             .addCase(logout.fulfilled, (state) => {
@@ -189,9 +197,10 @@ export const authSlice = createSlice({
 
 export const { clientLogout, setUser } = authSlice.actions;
 
-export const selectAuth = (state: RootState) => state.auth;
-export const selectIsAuthenticated = (state: RootState) =>
+export const selectAuth = (state: { auth: AuthState }) => state.auth;
+export const selectIsAuthenticated = (state: { auth: AuthState }) =>
     state.auth.isAuthenticated;
-export const selectAccessToken = (state: RootState) => state.auth.accessToken;
+export const selectAccessToken = (state: { auth: AuthState }) =>
+    state.auth.accessToken;
 
 export default authSlice.reducer;

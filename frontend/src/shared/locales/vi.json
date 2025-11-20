@@ -6,6 +6,22 @@
     "resetPassword": {},
     "adminSideBar": {
         "db": "Bảng điều khiển",
-        "ap": "Lịch hẹn"
+        "ap": "Lịch hẹn",
+        "sp": "Chuyên khoa"
+    },
+    "specialty": {
+        "tt": "Chuyên khoa",
+        "ds": "Bảng điều khiển / Chuyên khoa",
+        "nb": "Thêm Mới",
+        "epg": "Số mục mỗi trang",
+        "im": "Hình ảnh",
+        "na": "Tên",
+        "dc": "Mô tả",
+        "st": "Trạng thái",
+        "at": "Hành động",
+        "an": "Thêm Chuyên khoa Mới",
+        "ed": "Chỉnh sửa Chuyên khoa",
+        "np": "Tên Chuyên khoa",
+        "ul": "Tải lên"
     }
 }

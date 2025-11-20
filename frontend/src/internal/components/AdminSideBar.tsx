@@ -2,14 +2,13 @@ import { Menu } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import { CarryOutOutlined, HomeOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
-import { ThemeContext } from '@/shared/contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 
 export default function AdminSideBar() {
     const navigate = useNavigate();
-    const { isDark } = useContext(ThemeContext);
     const { t } = useTranslation();
+
+    const currentKey = location.pathname.replace('/admin/', '');
 
     const items = [
         {
@@ -21,6 +20,11 @@ export default function AdminSideBar() {
             key: 'appointments',
             icon: <CarryOutOutlined />,
             label: t('adminSideBar.ap')
+        },
+        {
+            key: 'specialties',
+            icon: <CarryOutOutlined />,
+            label: t('adminSideBar.sp')
         }
     ];
 
@@ -30,14 +34,13 @@ export default function AdminSideBar() {
 
     return (
         <Sider trigger={null} collapsible className='h-screen'>
-            <div className='text-2xl text-center font-bold text-blue-700 py-5'>
+            <div className='text-2xl text-center font-bold text-blue-700 py-4'>
                 ADMIN PANEL
             </div>
 
             <Menu
-                theme={isDark ? 'dark' : 'light'}
                 mode='inline'
-                defaultSelectedKeys={['1']}
+                selectedKeys={[currentKey]}
                 items={items}
                 onClick={handleNavigate}
             />

@@ -986,7 +986,8 @@ const createSpecialtyService = (name, description, imageFilename, status) => {
             if (existingSpecialty) {
                 return resolve({
                     errCode: 2,
-                    errMessage: 'Specialty already exists'
+                    errEnMessage: 'Specialty already exists',
+                    errViMessage: 'Chuyên khoa đã tồn tại'
                 });
             }
 
@@ -1001,7 +1002,8 @@ const createSpecialtyService = (name, description, imageFilename, status) => {
 
             return resolve({
                 errCode: 0,
-                message: 'Create specialty successful'
+                enMessage: 'Create specialty successful',
+                viMessage: 'Tạo chuyên khoa thành công'
             });
         } catch (e) {
             return reject(e);
@@ -1022,7 +1024,8 @@ const updateSpecialtyService = (specialtyId, data, imageFile) => {
                 }
                 return resolve({
                     errCode: 2,
-                    errMessage: 'Specialty not found'
+                    errEnMessage: 'Specialty not found',
+                    errViMessage: 'Chuyên khoa không tồn tại'
                 });
             }
 
@@ -1058,7 +1061,8 @@ const updateSpecialtyService = (specialtyId, data, imageFile) => {
 
             return resolve({
                 errCode: 0,
-                message: 'Update specialty successful'
+                enMessage: 'Update specialty successful',
+                viMessage: 'Cập nhật chuyên khoa thành công'
             });
         } catch (e) {
             if (imageFile) {
@@ -1084,7 +1088,8 @@ const deleteSpecialtyService = (specialtyId) => {
         if (!specialty) {
             return resolve({
                 errCode: 2,
-                errMessage: 'Specialty not found'
+                errEnMessage: 'Specialty not found',
+                errViMessage: 'Chuyên khoa không tồn tại'
             });
         }
 
@@ -1101,7 +1106,8 @@ const deleteSpecialtyService = (specialtyId) => {
 
         return resolve({
             errCode: 0,
-            message: 'Delete specialty successful'
+            enMessage: 'Delete specialty successful',
+            viMessage: 'Xóa chuyên khoa thành công'
         });
     });
 };

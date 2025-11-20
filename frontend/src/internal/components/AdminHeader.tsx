@@ -16,10 +16,14 @@ export default function AdminHeader() {
     const items = [
         {
             key: '1',
-            label: 'Profile'
+            label: 'My Profile'
         },
         {
             key: '2',
+            label: 'Setting'
+        },
+        {
+            key: '3',
             label: 'Logout'
         }
     ];
@@ -58,17 +62,17 @@ export default function AdminHeader() {
     };
 
     return (
-        <Header className='flex justify-between items-center px-6 shadow-sm'>
+        <Header className='flex justify-between items-center px-6 bg-white'>
             <div />
             <div className='flex items-center gap-10'>
                 <button
-                    className='text-lg cursor-pointer hover:text-blue-500 transition-colors'
+                    className='text-lg cursor-pointer text-blue-500 '
                     onClick={toggleTheme}
                 >
                     {isDark ? (
-                        <CiLight className='text-3xl cursor-pointer' />
+                        <CiLight className='text-3xl cursor-pointer text-blue-800 hover:text-blue-600 transition-colors' />
                     ) : (
-                        <CiDark className='text-3xl cursor-pointer' />
+                        <CiDark className='text-3xl cursor-pointer text-blue-600 hover:text-blue-800 transition-colors' />
                     )}
                 </button>
 
@@ -77,7 +81,15 @@ export default function AdminHeader() {
                     trigger={['click']}
                     placement='bottom'
                 >
-                    <BsTranslate className='text-2xl cursor-pointer' />
+                    <span>
+                        <BsTranslate
+                            className={`text-2xl cursor-pointer transition-colors ${
+                                isDark
+                                    ? 'text-blue-800 hover:text-blue-600'
+                                    : 'text-blue-600 hover:text-blue-800'
+                            }`}
+                        />
+                    </span>
                 </Dropdown>
 
                 <Dropdown
@@ -85,7 +97,15 @@ export default function AdminHeader() {
                     trigger={['click']}
                     placement='bottom'
                 >
-                    <IoIosNotificationsOutline className='text-3xl cursor-pointer' />
+                    <span>
+                        <IoIosNotificationsOutline
+                            className={`text-3xl cursor-pointer transition-colors ${
+                                isDark
+                                    ? 'text-blue-800 hover:text-blue-600'
+                                    : 'text-blue-600 hover:text-blue-800'
+                            }`}
+                        />
+                    </span>
                 </Dropdown>
 
                 <Dropdown menu={{ items }} placement='bottom'>

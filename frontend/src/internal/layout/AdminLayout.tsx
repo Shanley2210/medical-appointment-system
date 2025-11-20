@@ -11,7 +11,7 @@ export default function AdminLayout() {
 
             <Layout>
                 <AdminHeader />
-                <Content className='bg-amber-200 p-5'>
+                <Content className='m-3 '>
                     <Outlet />
                 </Content>
             </Layout>

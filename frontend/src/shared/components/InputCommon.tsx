@@ -1,29 +1,31 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useState } from 'react';
+import { useState, forwardRef } from 'react';
 import { PiEyeLight, PiEyeSlashLight } from 'react-icons/pi';
 import { useNavigate } from 'react-router-dom';
 
-interface InputCommonProps {
+interface InputCommonProps extends React.InputHTMLAttributes<HTMLInputElement> {
     lable: string;
-    type: string;
     isPhone?: boolean;
     isPassword?: boolean;
 }
 
-export default function InputCommon({
-    lable,
-    type,
-    isPhone = false,
-    isPassword = false,
-    ...props
-}: InputCommonProps) {
-    const navigate = useNavigate();
+const InputCommon = forwardRef<HTMLInputElement, InputCommonProps>(
+    (
+        {
+            lable,
+            type,
+            isPhone = false,
+            isPassword = false,
+            className,
+            ...props
+        },
+        ref
+    ) => {
+        const navigate = useNavigate();
+        const [hidePassword, setHidePassword] = useState(true);
 
-    const [hidePassword, setHidePassword] = useState(true);
-
-    return (
-        <>
+        return (
             <div className='space-y-2 select-none'>
                 <div className='flex justify-between'>
                     <Label className='text-gray-900'>{lable}</Label>
@@ -38,6 +40,7 @@ export default function InputCommon({
                 </div>
                 <div className='relative'>
                     <Input
+                        ref={ref}
                         type={
                             isPassword
                                 ? hidePassword
@@ -48,7 +51,9 @@ export default function InputCommon({
                         placeholder=''
                         className={`${
                             isPhone ? 'pl-13' : 'pl-4'
-                        } border-gray-300 rounded-none focus:outline-none focus-visible:ring-0 focus-visible:border-gray-400`}
+                        } border-gray-300 rounded-none focus:outline-none focus-visible:ring-0 focus-visible:border-gray-400 ${
+                            className || ''
+                        }`}
                         {...props}
                     />
                     {isPhone && (
@@ -74,6 +79,10 @@ export default function InputCommon({
                     )}
                 </div>
             </div>
-        </>
-    );
-}
+        );
+    }
+);
+
+InputCommon.displayName = 'InputCommon';
+
+export default InputCommon;

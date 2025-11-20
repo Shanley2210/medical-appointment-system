@@ -1,6 +1,27 @@
 {
+    "login": {},
+    "register": {},
+    "verifyOtp": {},
+    "forgotPassword": {},
+    "resetPassword": {},
     "adminSideBar": {
         "db": "Dashboard",
-        "ap": "Appointments"
+        "ap": "Appointments",
+        "sp": "Specialties"
+    },
+    "specialty": {
+        "tt": "Specialties",
+        "ds": "Dashboard / Specialties",
+        "nb": "Add New",
+        "epg": "Entries per page",
+        "im": "Image",
+        "na": "Name",
+        "dc": "Description",
+        "st": "Status",
+        "at": "Actions",
+        "an": "Add New Specialty",
+        "ed": "Edit Specialty",
+        "np": "Name Specialty",
+        "ul": "Upload"
     }
 }

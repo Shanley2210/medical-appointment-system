@@ -3,7 +3,9 @@ const db = require('../models');
 const getSpecialtyService = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const specialties = await db.Specialty.findAll();
+            const specialties = await db.Specialty.findAll({
+                order: [['updatedAt', 'DESC']]
+            });
 
             if (!specialties) {
                 return resolve({

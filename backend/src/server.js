@@ -8,11 +8,12 @@ const cors = require('cors');
 dotenv.config();
 
 const app = express();
+const uploadsDir = path.join(__dirname, 'uploads');
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static(path.join(__dirname, 'src/uploads')));
+app.use('/uploads', express.static(uploadsDir));
 
 initWebRoutes(app);
 
