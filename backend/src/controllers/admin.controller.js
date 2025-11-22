@@ -610,7 +610,6 @@ const createServiceController = async (req, res) => {
 };
 
 const updateServiceController = async (req, res) => {
-    
     try {
         const serviceId = req.params.id;
         const data = req.body;
@@ -760,6 +759,34 @@ const setPriceDoctorController = async (req, res) => {
     }
 };
 
+const setPriceServiceController = async (req, res) => {
+    try {
+        const serviceId = req.params.id;
+        const { price } = req.body;
+
+        if (!serviceId || !price) {
+            return res.status(200).json({
+                errCode: 1,
+                errEnMessage: 'Missing required parameters',
+                errViMessage: 'Thiếu tham số bắt buộc'
+            });
+        }
+
+        const response = await adminService.setPriceServiceService(
+            serviceId,
+            price
+        );
+
+        return res.status(200).json(response);
+    } catch (e) {
+        console.log('Error in setPrice:', e);
+        return res.status(500).json({
+            errCode: -1,
+            errMessage: 'Error from server'
+        });
+    }
+};
+
 module.exports = {
     createHopistalAdminController,
     getRolesController,
@@ -787,5 +814,6 @@ module.exports = {
     createScheduleController,
     deleteScheduleController,
     getSchedulesController,
-    setPriceDoctorController
+    setPriceDoctorController,
+    setPriceServiceController
 };

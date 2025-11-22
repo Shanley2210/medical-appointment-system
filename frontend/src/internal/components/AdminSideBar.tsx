@@ -41,17 +41,17 @@ export default function AdminSideBar() {
         {
             key: 'doctors',
             icon: <FaUserDoctor className='w-5 h-5' />,
-            label: 'Bac si'
+            label: t('adminSideBar.dt')
         },
         {
             key: 'patients',
             icon: <FaUserInjured className='w-5 h-5' />,
-            label: 'Benh nhan'
+            label: t('adminSideBar.pt')
         },
         {
             key: 'receptionists',
             icon: <FaUserNurse className='w-5 h-5' />,
-            label: 'le tan'
+            label: t('adminSideBar.rc')
         }
     ];
 

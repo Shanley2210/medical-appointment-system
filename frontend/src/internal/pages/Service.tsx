@@ -19,10 +19,12 @@ import { toast } from 'react-toastify';
 import {
     deleteService,
     postService,
+    setPriceService,
     updateService
 } from '@/shared/apis/serviceService';
 import LoadingCommon from '@/shared/components/LoadingCommon';
 import { LoadingOutlined } from '@ant-design/icons';
+import { IoPricetagsOutline } from 'react-icons/io5';
 
 export default function Service() {
     const { isDark } = useContext(ThemeContext);
@@ -31,11 +33,13 @@ export default function Service() {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [isOpen, setIsOpen] = useState(false);
+    const [isPriceOpen, setIsPriceOpen] = useState(false);
     const [formData, setFormData] = useState<Record<string, any>>({});
     const { t, i18n } = useTranslation();
     const language = i18n.language;
     const [isLoading, setIsLoading] = useState(false);
     const [editItem, setEditItem] = useState<IService | null>(null);
+    const [priceItem, setPriceItem] = useState<IService | null>(null);
     const [loadingDeleteId, setLoadingDeleteId] = useState<number | null>(null);
     const [loadingStatusId, setLoadingStatusId] = useState<number | null>(null);
 
@@ -265,6 +269,45 @@ export default function Service() {
         setFormData({});
         dispatch(fetchServices());
     };
+    const handleUpdatePrice = async () => {
+        if (!priceItem) return;
+
+        if (isNaN(Number(formData.price)) || Number(formData.price) <= 0) {
+            if (language === 'en') {
+                toast.warning('Price must be a positive number');
+                return;
+            } else if (language === 'vi') {
+                toast.warning('Giá phải là số dương');
+                return;
+            }
+        }
+
+        const updatedData = {
+            price: formData.price
+        };
+
+        setIsLoading(true);
+
+        const res = await setPriceService(Number(priceItem.id), updatedData);
+
+        if (res.data.errCode === 0) {
+            toast.success(
+                language === 'en' ? res.data.enMessage : res.data.viMessage
+            );
+        } else {
+            toast.error(
+                language === 'en'
+                    ? res.data.errEnMessage
+                    : res.data.errViMessage
+            );
+        }
+
+        setIsLoading(false);
+        setIsPriceOpen(false);
+        setPriceItem(null);
+        setFormData({});
+        dispatch(fetchServices());
+    };
 
     const columns = [
         {
@@ -298,7 +341,31 @@ export default function Service() {
             dataIndex: 'price',
             key: 'price',
             align: 'center' as const,
-            sorter: (a: any, b: any) => a.price.localeCompare(b.price)
+            sorter: (a: any, b: any) => a.price.localeCompare(b.price),
+            render: (_: any, record: IService) => (
+                <div className='flex gap-3 items-center justify-center'>
+                    <div>{Number(record.price).toLocaleString('vi-VN')} </div>
+                    <button
+                        onClick={() => {
+                            const id = Number(record.id);
+                            const old = services.find(
+                                (s) => Number(s.id) === id
+                            );
+
+                            setPriceItem(old || null);
+
+                            setFormData({
+                                price: old?.price
+                            });
+
+                            setIsPriceOpen(true);
+                        }}
+                        className='flex items-center gap-2 justify-center cursor-pointer'
+                    >
+                        <IoPricetagsOutline className='text-xl text-blue-500' />
+                    </button>
+                </div>
+            )
         },
         {
             title: t('service.st'),
@@ -419,12 +486,20 @@ export default function Service() {
                   type: 'checkbox'
               }
           ];
+    const priceModalConfigs: filterConfig[] = [
+        {
+            name: 'price',
+            label: t('service.pr') as string,
+            type: 'input'
+        }
+    ];
 
     useEffect(() => {
         if (services.length === 0) {
             dispatch(fetchServices());
         }
     }, [dispatch, services.length]);
+
     return (
         <div className='m-5'>
             <div
@@ -449,7 +524,7 @@ export default function Service() {
                     </Button>
                 </div>
                 <AdminModal
-                    title='Them dich vu'
+                    title={editItem ? t('service.ed') : t('service.an')}
                     open={isOpen}
                     onCancel={() => {
                         setIsOpen(false);
@@ -463,6 +538,25 @@ export default function Service() {
                         filters={modalConfigs}
                         initialValues={formData}
                         onChange={(values) => setFormData(values)}
+                    />
+                </AdminModal>
+                <AdminModal
+                    title={t('service.ur') as string}
+                    open={isPriceOpen}
+                    onCancel={() => {
+                        setIsPriceOpen(false);
+                        setPriceItem(null);
+                        setFormData({});
+                    }}
+                    onOk={handleUpdatePrice}
+                >
+                    {isLoading && <LoadingCommon />}
+                    <AdminFilter
+                        filters={priceModalConfigs}
+                        initialValues={formData}
+                        onChange={(values) =>
+                            setFormData((prev: any) => ({ ...prev, ...values }))
+                        }
                     />
                 </AdminModal>
             </div>

@@ -1452,6 +1452,46 @@ const setPriceDoctorService = (doctorId, price) => {
     });
 };
 
+const setPriceServiceService = (serviceId, price) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const service = await db.Service.findOne({
+                where: { id: serviceId }
+            });
+
+            if (!service) {
+                return resolve({
+                    errCode: 2,
+                    errEnMessage: 'Service not found',
+                    errViMessage: 'Dịch vụ không tồn tại'
+                });
+            }
+
+            if (price <= 0) {
+                return resolve({
+                    errCode: 3,
+                    errEnMessage: 'Price must be greater than 0',
+                    errViMessage: 'Giá phải lớn hơn 0'
+                });
+            }
+
+            await db.Service.update(
+                { price: price },
+                { where: { id: serviceId } }
+            );
+
+            return resolve({
+                errCode: 0,
+                enMessage: 'Set price successful',
+                viMessage: 'Cập nhật giá thành công'
+            });
+        } catch (e) {
+            return reject(e);
+        }
+    });
+    s;
+};
+
 module.exports = {
     createHopistalAdminService,
     getRolesService,
@@ -1479,5 +1519,6 @@ module.exports = {
     createScheduleAndSlotService,
     deleteScheduleService,
     getSchedulesService,
-    setPriceDoctorService
+    setPriceDoctorService,
+    setPriceServiceService
 };

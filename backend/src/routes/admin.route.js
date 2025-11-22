@@ -220,11 +220,19 @@ router.delete(
 );
 
 router.post(
-    '/doctorprice/:id',
+    '/doctor-price/:id',
     authMiddleware.verifyToken,
     authMiddleware.verifyRole('Hospital_Admin'),
     authMiddleware.verifyPermission('doctor_manage'),
     adminController.setPriceDoctorController
+);
+
+router.post(
+    '/service-price/:id',
+    authMiddleware.verifyToken,
+    authMiddleware.verifyRole('Hospital_Admin'),
+    authMiddleware.verifyPermission('doctor_manage'),
+    adminController.setPriceServiceController
 );
 
 module.exports = router;

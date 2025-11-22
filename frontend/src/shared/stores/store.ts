@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './authSlice';
 import specialtiesReducer from './specialtySlice';
 import servicesReducer from './serviceSlice';
+import doctorsReducer from './doctorSlice';
 
 export const store = configureStore({
     reducer: {
         auth: authReducer,
         specialties: specialtiesReducer,
-        services: servicesReducer
+        services: servicesReducer,
+        doctors: doctorsReducer
     }
 });
 

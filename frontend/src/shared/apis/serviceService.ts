@@ -11,3 +11,10 @@ export const deleteService = async (id: number) => {
 export const updateService = async (id: number, data: Record<string, any>) => {
     return await api.put(`/admin/services/${id}`, data);
 };
+
+export const setPriceService = async (
+    id: number,
+    data: Record<string, any>
+) => {
+    return await api.post(`/admin/service-price/${id}`, data);
+};

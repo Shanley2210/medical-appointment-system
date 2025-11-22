@@ -8,7 +8,10 @@
         "db": "Bảng điều khiển",
         "ap": "Lịch hẹn",
         "sp": "Chuyên khoa",
-        "sv": "Dịch vụ"
+        "sv": "Dịch vụ",
+        "dt": "Bác sĩ",
+        "pt": "Bệnh nhân",
+        "rc": "Lễ tân"
     },
     "specialty": {
         "tt": "Chuyên khoa",
@@ -33,11 +36,12 @@
         "na": "Tên",
         "dc": "Mô tả",
         "dm": "Thời lượng (phút)",
-        "pr": "Giá (VND)",
+        "pr": "Giá đặt lịch (VND)",
         "st": "Trạng thái",
         "at": "Hành động",
         "an": "Thêm Dịch vụ Mới",
         "ed": "Chỉnh sửa Dịch vụ",
+        "ur": "Cập nhật Giá",
         "ns": "Tên Dịch vụ"
     }
 }

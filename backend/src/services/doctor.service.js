@@ -10,6 +10,11 @@ const getAllDoctorsService = () => {
                         model: db.User,
                         as: 'user',
                         attributes: ['name', 'email', 'phone']
+                    },
+                    {
+                        model: db.Specialty,
+                        as: 'specialty',
+                        attributes: ['name']
                     }
                 ]
             });
