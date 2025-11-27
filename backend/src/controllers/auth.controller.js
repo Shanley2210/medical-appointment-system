@@ -7,7 +7,8 @@ const registerController = async (req, res) => {
         if (!name || !email || !phone || !password || !confirmPassword) {
             return res.status(200).json({
                 errCode: 1,
-                errMessage: 'Missing required parameters'
+                errEnMessage: 'Missing required parameters',
+                errViMessage: 'Thiếu tham số yêu cầu'
             });
         }
 
@@ -35,7 +36,8 @@ const verifyEmailController = async (req, res) => {
         if (!email || !otp) {
             return res.status(200).json({
                 errCode: 1,
-                errMessage: 'Missing required parameters'
+                errEnMessage: 'Missing required parameters',
+                errViMessage: 'Thiếu tham số yêu cầu'
             });
         }
 
@@ -57,7 +59,8 @@ const resendOtpController = async (req, res) => {
         if (!email) {
             return res.status(200).json({
                 errCode: 1,
-                errMessage: 'Missing required parameters'
+                errEnMessage: 'Missing required parameters',
+                errViMessage: 'Thiếu tham số yêu cầu'
             });
         }
 
@@ -123,7 +126,8 @@ const forgotPasswordController = async (req, res) => {
         if (!emailOrPhone) {
             return res.status(200).json({
                 errCode: 1,
-                errMessage: 'Missing required parameters'
+                errEnMessage: 'Missing required parameters',
+                errViMessage: 'Thiếu tham số yêu cầu'
             });
         }
 

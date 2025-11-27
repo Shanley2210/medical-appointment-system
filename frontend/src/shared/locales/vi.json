@@ -1,9 +1,54 @@
 {
-    "login": {},
-    "register": {},
-    "verifyOtp": {},
-    "forgotPassword": {},
-    "resetPassword": {},
+    "login": {
+        "tt": "Đăng nhập",
+        "mp": "Email hoặc Số điện thoại",
+        "pa": "Mật khẩu",
+        "or": "hoặc",
+        "fp": "Quên mật khẩu?",
+        "si": "Đăng nhập",
+        "gg": "Đăng nhập bằng Google",
+        "do": "Chưa có tài khoản ?",
+        "su": "Đăng ký"
+    },
+    "register": {
+        "tt": "Đăng ký",
+        "fn": "Họ và tên",
+        "em": "Email",
+        "ph": "Số điện thoại",
+        "pa": "Mật khẩu",
+        "cp": "Xác nhận mật khẩu",
+        "su": "Đăng ký",
+        "or": "hoặc",
+        "gg": "Đăng nhập bằng Google",
+        "al": "Đã có tài khoản ? ",
+        "si": "Đăng nhập"
+    },
+    "verifyEmail": {
+        "tt": "Xác thực Email",
+        "st": "Nhập mã 6 chữ số được gửi đến email: ",
+        "ti": "Mã sẽ hết hạn sau: ",
+        "vf": "Xác thực",
+        "kn": "Bạn chưa nhận được mã. ",
+        "re": "Gửi lại OTP"
+    },
+    "forgotPassword": {
+        "tt": "Quên mật khẩu",
+        "st": "Nhập địa chỉ email của bạn và chúng tôi sẽ gửi bạn một liên kết để đặt lại mật khẩu.",
+        "ep": "Email hoặc Số điện thoại",
+        "sm": "Gửi",
+        "rp": "Nhớ mật khẩu? ",
+        "si": "Đăng nhập"
+    },
+    "resetPassword": {
+        "tt": "Đặt lại mật khẩu",
+        "st": "Nhập mã 6 chữ số được gửi đến email: ",
+        "ti": "Mã sẽ hết hạn sau: ",
+        "np": "Mật khẩu mới",
+        "cp": "Xác nhận mật khẩu",
+        "rp": "Đặt lại",
+        "kn": "Bạn chưa nhận được mã. ",
+        "re": "Gửi lại OTP"
+    },
     "adminSideBar": {
         "db": "Bảng điều khiển",
         "ap": "Lịch hẹn",

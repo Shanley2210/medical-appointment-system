@@ -6,12 +6,18 @@ import { BsTranslate } from 'react-icons/bs';
 import { useContext } from 'react';
 import { ThemeContext } from '@/shared/contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
+import { useAppDispatch } from '@/shared/stores/hooks';
+import { useNavigate } from 'react-router-dom';
+import { clientLogout } from '@/shared/stores/authSlice';
+import { MdLogout } from 'react-icons/md';
 
 const { Header } = Layout;
 
 export default function AdminHeader() {
     const { isDark, toggleTheme } = useContext(ThemeContext);
     const { i18n } = useTranslation();
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     const items = [
         {
@@ -24,7 +30,12 @@ export default function AdminHeader() {
         },
         {
             key: '3',
-            label: 'Logout'
+            label: 'Logout',
+            icon: <MdLogout style={{ fontSize: '20px' }} />,
+            onClick: () => {
+                dispatch(clientLogout());
+                navigate('/login', { replace: true });
+            }
         }
     ];
 
@@ -62,7 +73,7 @@ export default function AdminHeader() {
     };
 
     return (
-        <Header className='flex justify-between items-center bg-white px-6! fixed top-0 left-0 w-full z-50 '>
+        <Header className='flex justify-between items-center bg-white px-6! pr-15! fixed top-0 left-0 w-full z-50 '>
             <div className='text-2xl text-center font-bold text-blue-700'>
                 ADMIN PANEL
             </div>

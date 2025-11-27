@@ -1,6 +1,7 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState, forwardRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { PiEyeLight, PiEyeSlashLight } from 'react-icons/pi';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,6 +25,7 @@ const InputCommon = forwardRef<HTMLInputElement, InputCommonProps>(
     ) => {
         const navigate = useNavigate();
         const [hidePassword, setHidePassword] = useState(true);
+        const { t } = useTranslation();
 
         return (
             <div className='space-y-2 select-none'>
@@ -34,7 +36,7 @@ const InputCommon = forwardRef<HTMLInputElement, InputCommonProps>(
                             className='text-blue-600 hover:underline cursor-pointer'
                             onClick={() => navigate('/forgot-password')}
                         >
-                            Forgot password?
+                            {t('login.fp')}
                         </Label>
                     )}
                 </div>

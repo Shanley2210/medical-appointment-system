@@ -20,12 +20,12 @@ const generateTokens = (user) => {
 };
 
 const sendOtpEmail = async (email, otp) => {
-    const subject = 'Mã OTP xác thực đăng ký';
+    const subject = 'Mã OTP xác thực ';
     const text = `Mã OTP của bạn là: ${otp}. Mã này sẽ hết hạn sau 3 phút.`; //
     const html = `
         <div style="max-width:600px;margin:0 auto;background-color:#ffffff;border:1px solid #d0d0d0;padding:25px 30px;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;color:#333;line-height:1.6;">
-            <h2 style="color:#0078d7;margin-bottom:15px;text-transform:uppercase;">Xác thực tài khoản phòng khám</h2>
-            <p style="margin-bottom:10px;">Cảm ơn bạn đã đăng ký. Vui lòng sử dụng mã OTP sau để hoàn tất:</p>
+            <h2 style="color:#0078d7;margin-bottom:15px;text-transform:uppercase;">MÃ XÁC THỰC TÀI KHOẢN</h2>
+            <p style="margin-bottom:10px;">Vui lòng sử dụng mã OTP sau để hoàn tất:</p>
             <div style="text-align:center;margin:20px 0;">
                 <span style="display:inline-block;font-size:28px;font-weight:bold;color:#0078d7;background:#f2f2f2;padding:10px 40px;border:1px solid #ccc;">${otp}</span>
             </div>
@@ -38,29 +38,14 @@ const sendOtpEmail = async (email, otp) => {
     await sendMail(email, subject, text, html);
 };
 
-const sendForgotPasswordEmail = async (email, otp) => {
-    const subject = 'Khôi phục mật khẩu';
-    const text = `Mã OTP khôi phục mật khẩu của bạn là: ${otp}. Mã này sẽ hết hạn sau 3 phút.`;
-    const html = `
-        <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-            <h2>Khôi phục mật khẩu</h2>
-            <p>Bạn đã yêu cầu khôi phục mật khẩu. Vui lòng sử dụng mã OTP sau:</p>
-            <p style="font-size: 24px; font-weight: bold; color: #1a73e8;">${otp}</p>
-            <p>Mã này sẽ hết hạn sau <strong>3 phút</strong>.</p>
-            <p>Nếu bạn không yêu cầu điều này, vui lòng bỏ qua email.</p>
-        </div>
-    `;
-
-    await sendMail(email, subject, text, html);
-};
-
 const registerService = (name, email, phone, password, confirmPassword) => {
     return new Promise(async (resolve, reject) => {
         try {
             if (password !== confirmPassword) {
                 return resolve({
                     errCode: 2,
-                    errMessage: 'Password and confirm password do not match'
+                    errEnMessage: 'Password and confirm password do not match',
+                    errViMessage: 'Mật khẩu và xác nhận mật khẩu không khớp'
                 });
             }
 
@@ -74,7 +59,8 @@ const registerService = (name, email, phone, password, confirmPassword) => {
             if (existingVerifiedUser) {
                 return resolve({
                     errCode: 3,
-                    errMessage: 'Email or phone number already in use'
+                    errEnMessage: 'Email or phone number already in use',
+                    errViMessage: 'Email hoặc số điện thoại đã được sử dụng'
                 });
             }
 
@@ -124,8 +110,10 @@ const registerService = (name, email, phone, password, confirmPassword) => {
 
             return resolve({
                 errCode: 0,
-                message:
-                    'Registration successful. Please check your email for OTP.'
+                enMessage:
+                    'Registration successful. Please check your email for OTP.',
+                viMessage:
+                    'Đăng ký thành công. Vui lòng kiểm tra email của bạn để nhận OTP.'
             });
         } catch (e) {
             return reject(e);
@@ -141,21 +129,24 @@ const verifyEmailService = (email, otp) => {
             if (!user) {
                 return resolve({
                     errCode: 2,
-                    errMessage: 'User not found'
+                    errEnMessage: 'User not found',
+                    errViMessage: 'Người dùng không tồn tại'
                 });
             }
 
             if (user.verify) {
                 return resolve({
                     errCode: 3,
-                    errMessage: 'Email is already verified'
+                    errEnMessage: 'Email is already verified',
+                    errViMessage: 'Email đã được xác thực'
                 });
             }
 
             if (user.otp !== otp || user.otpExpires < new Date()) {
                 return resolve({
                     errCode: 4,
-                    errMessage: 'OTP is invalid or has expired.'
+                    errEnMessage: 'OTP is invalid or has expired.',
+                    errViMessage: 'Mã OTP không hợp lệ hoặc đã hết hạn.'
                 });
             }
 
@@ -169,7 +160,8 @@ const verifyEmailService = (email, otp) => {
             await user.save();
             return resolve({
                 errCode: 0,
-                message: 'Email verified successfully',
+                enMessage: 'Email verified successfully',
+                viMessage: 'Email đã được xác thực thành công',
                 tokens: tokens
             });
         } catch (e) {
@@ -186,14 +178,8 @@ const resendOtpService = (email) => {
             if (!user) {
                 return resolve({
                     errCode: 2,
-                    errMessage: 'User not found'
-                });
-            }
-
-            if (user.verify) {
-                return resolve({
-                    errCode: 3,
-                    errMessage: 'Email is already verified'
+                    errEnMessage: 'User not found',
+                    errViMessage: 'Người dùng không tồn tại'
                 });
             }
 
@@ -208,7 +194,9 @@ const resendOtpService = (email) => {
 
             return resolve({
                 errCode: 0,
-                message: 'OTP resent successfully. Please check your email.'
+                enMessage: 'OTP resent successfully. Please check your email.',
+                viMessage:
+                    'Mã OTP đã được gửi lại thành công. Vui lòng kiểm tra email của bạn.'
             });
         } catch (e) {
             return reject(e);
@@ -315,7 +303,9 @@ const forgotPasswordService = (emailOrPhone) => {
             if (!user) {
                 return resolve({
                     errCode: 2,
-                    errMessage: 'User not found or not verified'
+                    errEnMessage: 'User not found or not verified',
+                    errViMessage:
+                        'Người dùng không tồn tại hoặc chưa được xác thực'
                 });
             }
 
@@ -325,12 +315,14 @@ const forgotPasswordService = (emailOrPhone) => {
             user.otpExpires = otpExpiry;
             await user.save();
 
-            await sendForgotPasswordEmail(user.email, otp);
+            await sendOtpEmail(user.email, otp);
 
             return resolve({
                 errCode: 0,
-                message:
-                    'OTP for password reset sent successfully. Please check your email.'
+                enMessage:
+                    'OTP for password reset sent successfully. Please check your email.',
+                viMessage:
+                    'Mã OTP đã được gửi thành công. Vui lòng kiểm tra email của bạn.'
             });
         } catch (e) {
             return reject(e);
@@ -349,7 +341,9 @@ const resetPasswordService = (
             if (newPassword !== confirmNewPassword) {
                 return resolve({
                     errCode: 2,
-                    errMessage: 'New password and confirm password do not match'
+                    errEnMessage:
+                        'New password and confirm password do not match',
+                    errViMessage: 'Mật khẩu mới và xác nhận mật khẩu không khớp'
                 });
             }
 
@@ -363,14 +357,16 @@ const resetPasswordService = (
             if (!user) {
                 return resolve({
                     errCode: 3,
-                    errMessage: 'User not found'
+                    errEnMessage: 'User not found',
+                    errViMessage: 'Người dùng không tồn tại'
                 });
             }
 
             if (user.otp !== otp || user.otpExpires < new Date()) {
                 return resolve({
                     errCode: 4,
-                    errMessage: 'OTP is invalid or has expired.'
+                    errEnMessage: 'OTP is invalid or has expired.',
+                    errViMessage: 'Mã OTP không hợp lệ hoặc đã hết hạn.'
                 });
             }
 
@@ -382,7 +378,8 @@ const resetPasswordService = (
 
             return resolve({
                 errCode: 0,
-                message: 'Password reset successful'
+                enMessage: 'Password reset successful',
+                viMessage: 'Đặt lại mật khẩu thành công'
             });
         } catch (e) {
             return reject(e);

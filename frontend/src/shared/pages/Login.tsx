@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { useAppDispatch } from '../stores/hooks';
 import { login } from '../stores/authSlice';
+import { useTranslation } from 'react-i18next';
 
 interface LoginForm {
     emailOrPhone: string;
@@ -15,6 +16,8 @@ interface LoginForm {
 export default function Login() {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const { t, i18n } = useTranslation();
+    const language = i18n.language;
 
     const { register, handleSubmit } = useForm<LoginForm>({
         defaultValues: {
@@ -25,15 +28,27 @@ export default function Login() {
 
     const onError = (errors: any) => {
         if (errors.emailOrPhone?.type === 'required') {
-            toast.error('Email hoặc số điện thoại không được để trống');
+            toast.error(
+                language === 'vi'
+                    ? 'Email hoặc số điện thoại không được để trống'
+                    : 'Email or Phone is required'
+            );
             return;
         }
         if (errors.password?.type === 'required') {
-            toast.error('Mật khẩu không được để trống');
+            toast.error(
+                language === 'vi'
+                    ? 'Mật khẩu không được để trống'
+                    : 'Password is required'
+            );
             return;
         }
         if (errors.password?.type === 'minLength') {
-            toast.error('Mật khẩu phải có ít nhất 6 ký tự');
+            toast.error(
+                language === 'vi'
+                    ? 'Mật khẩu phải có ít nhất 6 ký tự'
+                    : 'Password must be at least 6 characters'
+            );
             return;
         }
     };
@@ -48,13 +63,20 @@ export default function Login() {
             const resultAction = await dispatch(login(dataLogin));
 
             if (login.fulfilled.match(resultAction)) {
-                toast.success(resultAction.payload.message);
+                toast.success(
+                    language === 'vi'
+                        ? 'Đăng nhập thành công'
+                        : 'Login successfully'
+                );
                 switch (resultAction.payload.user.role) {
                     case 1:
                         navigate('/admin/dashboard');
                         break;
                     case 2:
                         navigate('/admin/dashboard');
+                        break;
+                    case 3:
+                        navigate('/');
                         break;
                     default:
                         navigate('/');
@@ -73,13 +95,13 @@ export default function Login() {
     };
 
     return (
-        <div className='min-h-screen bg-white flex lg:flex-row items-center justify-center sm:p-4'>
+        <div className='min-h-screen bg-white flex lg:flex-row items-center justify-center sm:p-4 select-none'>
             <div className='w-full max-w-md lg:w-1/2 lg:max-w-lg p-2 sm:p-4'>
                 <Card className='shadow-none border-gray-400 rounded-none'>
                     <CardContent className='p-5'>
                         <div className='flex justify-center mb-6'>
                             <h2 className='text-2xl font-semibold text-gray-800'>
-                                Login
+                                {t('login.tt')}
                             </h2>
                         </div>
 
@@ -88,7 +110,7 @@ export default function Login() {
                             onSubmit={handleSubmit(onSubmit, onError)}
                         >
                             <InputCommon
-                                lable='Email or Phone'
+                                lable={t('login.mp')}
                                 type='text'
                                 {...register('emailOrPhone', {
                                     required: true
@@ -96,7 +118,7 @@ export default function Login() {
                             />
 
                             <InputCommon
-                                lable='Password'
+                                lable={t('login.pa')}
                                 type='password'
                                 isPassword={true}
                                 {...register('password', {
@@ -105,31 +127,28 @@ export default function Login() {
                                 })}
                             />
 
-                            <ButtonCommon label='Sign in' type='submit' />
+                            <ButtonCommon label={t('login.si')} type='submit' />
                         </form>
 
                         <div className='flex items-center my-6'>
                             <div className='grow border-t border-gray-400'></div>
 
                             <span className='mx-4 text-gray-500 text-sm font-light'>
-                                or
+                                {t('login.or')}
                             </span>
 
                             <div className='grow border-t border-gray-400'></div>
                         </div>
 
-                        <ButtonCommon
-                            label='Sign in with Google'
-                            isGoogle={true}
-                        />
+                        <ButtonCommon label={t('login.gg')} isGoogle={true} />
 
                         <div className='text-center mt-6 text-sm'>
-                            Don't have an account ?{' '}
+                            {t('login.do')}{' '}
                             <span
                                 className='text-blue-600 font-medium hover:underline cursor-pointer'
                                 onClick={() => navigate('/register')}
                             >
-                                Sign up
+                                {t('login.su')}
                             </span>
                         </div>
                     </CardContent>

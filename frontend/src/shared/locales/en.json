@@ -1,9 +1,54 @@
 {
-    "login": {},
-    "register": {},
-    "verifyOtp": {},
-    "forgotPassword": {},
-    "resetPassword": {},
+    "login": {
+        "tt": "Login",
+        "mp": "Email or Phone",
+        "pa": "Password",
+        "or": "or",
+        "fp": "Forgot password?",
+        "si": "Sign in",
+        "gg": "Sign in with Google",
+        "do": "Don't have an account ?",
+        "su": "Sign up"
+    },
+    "register": {
+        "tt": "Register",
+        "fn": "Full Name",
+        "em": "Email",
+        "ph": "Phone",
+        "pa": "Password",
+        "cp": "Confirm Password",
+        "su": "Sign up",
+        "or": "or",
+        "gg": "Sign in with Google",
+        "al": "Already have an account ? ",
+        "si": "Sign in"
+    },
+    "verifyEmail": {
+        "tt": "Verify Email",
+        "st": "Enter the 6-digit OTP sent to your email: ",
+        "ti": "The code will expire in: ",
+        "vf": "Verify",
+        "kn": "You haven’t received the code. ",
+        "re": "Resend OTP"
+    },
+    "forgotPassword": {
+        "tt": "Forgot Password",
+        "st": " Enter your email and we will send you a link to reset your password.",
+        "ep": "Email or Phone",
+        "sm": "Submit",
+        "rp": "Remember password? ",
+        "si": "Sign in"
+    },
+    "resetPassword": {
+        "tt": "Reset Password",
+        "st": "Enter the 6-digit OTP sent to your email: ",
+        "ti": "The code will expire in: ",
+        "np": "New Password",
+        "cp": "Confirm Password",
+        "rp": "Reset",
+        "kn": "You haven’t received the code. ",
+        "re": "Resend OTP"
+    },
     "adminSideBar": {
         "db": "Dashboard",
         "ap": "Appointments",
