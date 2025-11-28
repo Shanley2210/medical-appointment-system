@@ -83,9 +83,9 @@ export default function AdminHeader() {
                     onClick={toggleTheme}
                 >
                     {isDark ? (
-                        <CiLight className='text-3xl cursor-pointer text-blue-800 hover:text-blue-600 transition-colors' />
+                        <CiDark className='text-3xl cursor-pointer text-blue-800 hover:text-blue-600 transition-colors' />
                     ) : (
-                        <CiDark className='text-3xl cursor-pointer text-blue-600 hover:text-blue-800 transition-colors' />
+                        <CiLight className='text-3xl cursor-pointer text-blue-600 hover:text-blue-800 transition-colors' />
                     )}
                 </button>
 

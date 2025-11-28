@@ -16,9 +16,8 @@ export default function AppRouter() {
                         </GuestOnly>
                     }
                 />
-
-                <Route path='/*' element={<PatientRouter />} />
                 <Route path='/admin/*' element={<AdminRouter />} />
+                <Route path='/*' element={<PatientRouter />} />
             </Routes>
         </BrowserRouter>
     );
