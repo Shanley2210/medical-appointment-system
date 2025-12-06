@@ -173,7 +173,8 @@ const createProfilePatientService = async (userId, data) => {
             if (existingPatient) {
                 return resolve({
                     errCode: 2,
-                    errMessage: 'Patient already exists'
+                    errEnMessage: 'Patient already exists',
+                    errViMessage: 'Bệnh nhân đã tồn tại'
                 });
             }
 
@@ -193,7 +194,8 @@ const createProfilePatientService = async (userId, data) => {
 
             return resolve({
                 errCode: 0,
-                message: 'Create profile patient successful',
+                viMessage: 'Tạo profile bệnh nhân thành công',
+                enMessage: 'Create profile patient successful',
                 data: newPatient
             });
         } catch (e) {
@@ -212,7 +214,8 @@ const updateProfilePatientService = async (userId, data) => {
             if (!patient) {
                 return resolve({
                     errCode: 2,
-                    errMessage: 'User not found'
+                    errEnMessage: 'User not found',
+                    errViMessage: 'Bệnh nhân không tồn tại'
                 });
             }
 
@@ -236,7 +239,8 @@ const updateProfilePatientService = async (userId, data) => {
 
             return resolve({
                 errCode: 0,
-                message: 'Update patient successful'
+                enMessage: 'Update patient successful',
+                viMessage: 'Cập nhật profile bệnh nhân thành công'
             });
         } catch (e) {
             return reject(e);

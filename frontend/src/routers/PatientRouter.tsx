@@ -6,6 +6,8 @@ import ResetPassword from '@/patient/pages/ResetPassword';
 import HomePage from '@/patient/pages/HomePage';
 import PatientLayout from '@/patient/layout/PatientLayout';
 import DoctorDetail from '@/patient/pages/DoctorDetail';
+import Profile from '@/patient/pages/Profile';
+import CreateEditProfile from '@/patient/pages/CreateEditProfile';
 
 export default function PatientRouter() {
     return (
@@ -23,6 +25,11 @@ export default function PatientRouter() {
             >
                 <Route index element={<HomePage />} />
                 <Route path='bac-si/:slug/:id' element={<DoctorDetail />} />
+                <Route path='/profile' element={<Profile />} />
+                <Route
+                    path='/profile/create-profile'
+                    element={<CreateEditProfile />}
+                />
             </Route>
         </Routes>
     );

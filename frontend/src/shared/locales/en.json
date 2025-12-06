@@ -219,7 +219,9 @@
         "spo": "Support",
         "csbm": "Privacy Policy",
         "dksd": "Terms of Use",
-        "lhe": "Contact"
+        "lhe": "Contact",
+        "pf": "Personal Information",
+        "lo": "Logout"
     },
     "detalDoctor": {
         "dt": "Doctor",
@@ -236,5 +238,33 @@
         "cdt": "Select appointment time (booking fee 0 VND).",
         "int": "Brief introduction",
         "exp": "Work experience"
+    },
+    "patientProfile": {
+        "tt": "Personal Information",
+        "ph": "Phone: ",
+        "bd": "Birthday",
+        "gd": "Gender",
+        "dt": "Ethnicity",
+        "et": "Nationality",
+        "ad": "Address",
+        "vc": "Province / City",
+        "cvc": "Select Province / City",
+        "vp": "District / Ward",
+        "cvp": "Select District / Ward",
+        "ct": "Detailed Address",
+        "nct": "Enter Detailed Address",
+        "fa": "Family Address",
+        "in": "Insurance Number",
+        "it": "Insurance Term",
+        "np": "Note PMH (Past Medical History)",
+        "ma": "Male",
+        "fm": "Female",
+        "ot": "Other",
+        "xt": "Profile has been verified",
+        "cn": "Update profile",
+        "cths": "No profile has been created",
+        "ths": "Create profile",
+        "ttcb": "Basic Information",
+        "ttyt": "Medical Information"
     }
 }

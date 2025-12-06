@@ -4,11 +4,12 @@ import ButtonCommon from '../components/ButtonCommon';
 import OTPInput from '../components/OTPInput';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { resendOtp, resetPassword } from '@/shared/apis/authService';
+import { resendOtp, resetPassword } from '@/shared/apis/patientService';
 import LoadingCommon from '@/shared/components/LoadingCommon';
 import { useForm } from 'react-hook-form';
+import { ThemeContext } from '@/shared/contexts/ThemeContext';
 
 interface RegisterForm {
     newPassword: string;
@@ -26,6 +27,7 @@ export default function ResetPassword() {
     const [otp, setOtp] = useState('');
     const { register, handleSubmit } = useForm<RegisterForm>();
     const navigate = useNavigate();
+    const { isDark } = useContext(ThemeContext);
 
     const formatTime = (sec: number) => {
         const m = Math.floor(sec / 60);
@@ -35,12 +37,11 @@ export default function ResetPassword() {
 
     const handleResend = async () => {
         if (cooldown > 0) return;
+
         setCooldown(60);
         setVerifyTime(180);
 
-        const dataResend = {
-            email: emailLocation
-        };
+        const dataResend = { email: emailLocation };
 
         try {
             setIsLoading(true);
@@ -59,8 +60,6 @@ export default function ResetPassword() {
                 );
             }
         } catch (e: any) {
-            console.error('Error submitting form:', e);
-
             toast.error(
                 language === 'vi' ? 'Lỗi phía Server' : 'Error from Server'
             );
@@ -68,6 +67,7 @@ export default function ResetPassword() {
             setIsLoading(false);
         }
     };
+
     const onSubmit = async (data: RegisterForm) => {
         if (data.newPassword !== data.confirmPassword) {
             toast.error(
@@ -77,7 +77,8 @@ export default function ResetPassword() {
             );
             return;
         }
-        if (data.newPassword.length < 6 || data.confirmPassword.length < 6) {
+
+        if (data.newPassword.length < 6) {
             toast.error(
                 language === 'vi'
                     ? 'Mật khẩu phải có ít nhất 6 ký tự'
@@ -85,6 +86,7 @@ export default function ResetPassword() {
             );
             return;
         }
+
         const dataResetPassword = {
             emailOrPhone: emailLocation,
             otp: otp,
@@ -104,9 +106,7 @@ export default function ResetPassword() {
                     language === 'vi' ? res.data.viMessage : res.data.enMessage
                 );
 
-                navigate('/login', {
-                    replace: true
-                });
+                navigate('/login', { replace: true });
             } else {
                 toast.error(
                     language === 'vi'
@@ -115,17 +115,14 @@ export default function ResetPassword() {
                 );
             }
         } catch (e: any) {
-            console.error('Error submitting form:', e);
-
             toast.error(
                 language === 'vi' ? 'Lỗi phía Server' : 'Error from Server'
             );
         } finally {
             setIsLoading(false);
         }
-
-        console.log(dataResetPassword);
     };
+
     const onError = (errors: any) => {
         if (
             errors.newPassword?.type === 'required' ||
@@ -136,7 +133,6 @@ export default function ResetPassword() {
                     ? 'Không được để trống các trường dữ liệu'
                     : 'Fields cannot be empty'
             );
-            return;
         }
     };
 
@@ -149,6 +145,7 @@ export default function ResetPassword() {
 
         return () => clearInterval(timer);
     }, [cooldown]);
+
     useEffect(() => {
         const timer = setInterval(() => {
             setVerifyTime((prev) => (prev > 0 ? prev - 1 : 0));
@@ -158,12 +155,24 @@ export default function ResetPassword() {
     }, []);
 
     return (
-        <div className='min-h-screen bg-white flex lg:flex-row items-center justify-center sm:p-4'>
+        <div
+            className={`min-h-screen flex lg:flex-row items-center justify-center sm:p-4 ${
+                isDark ? 'bg-gray-900' : 'bg-white'
+            }`}
+        >
             <div className='w-full max-w-md lg:w-1/2 lg:max-w-lg p-2 sm:p-4'>
-                <Card className='shadow-none border-gray-400 rounded-none'>
+                <Card
+                    className={`shadow-none border-gray-400 rounded-none ${
+                        isDark ? 'bg-gray-800 text-white' : 'bg-white'
+                    }`}
+                >
                     <CardContent className='p-5'>
                         <div className='mb-6'>
-                            <h2 className='text-2xl font-semibold text-gray-800 text-center'>
+                            <h2
+                                className={`text-2xl font-semibold text-center ${
+                                    isDark ? 'text-white' : 'text-gray-800'
+                                }`}
+                            >
                                 {t('resetPassword.tt')}
                             </h2>
 
@@ -185,9 +194,9 @@ export default function ResetPassword() {
                                 onChange={(otp) => setOtp(otp)}
                             />
 
-                            <div className='text-gray-900 text-center font-medium mb-4 text-'>
-                                {t('resetPassword.ti')}
-                                <span className='text-blue-600 font-medium '>
+                            <div className='text-center font-medium mb-4'>
+                                {t('resetPassword.ti')}{' '}
+                                <span className='text-blue-600 font-medium'>
                                     {formatTime(verifyTime)}
                                 </span>
                             </div>
@@ -213,8 +222,9 @@ export default function ResetPassword() {
                                 type='submit'
                             />
                         </form>
+
                         <div className='text-center mt-6 text-sm'>
-                            {t('resetPassword.kn')}
+                            {t('resetPassword.kn')}{' '}
                             <span
                                 className={`text-blue-600 font-medium hover:underline cursor-pointer ${
                                     cooldown > 0

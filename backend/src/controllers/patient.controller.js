@@ -30,7 +30,8 @@ const createProfilePatientController = async (req, res) => {
         if (!data || !userId) {
             return res.status(200).json({
                 errCode: 1,
-                errMessage: 'Missing required parameters'
+                errEnMessage: 'Missing required parameters',
+                errViMessage: 'Thiếu tham số bắt buộc'
             });
         }
 
@@ -56,7 +57,8 @@ const updateProfilePatientController = async (req, res) => {
     if (!data) {
         return res.status(200).json({
             errCode: 1,
-            errMessage: 'Missing required parameters'
+            errEnMessage: 'Missing required parameters',
+            errViMessage: 'Thiếu tham số bắt buộc'
         });
     }
 

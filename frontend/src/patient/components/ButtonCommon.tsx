@@ -1,4 +1,6 @@
 import { Button } from '@/components/ui/button';
+import { ThemeContext } from '@/shared/contexts/ThemeContext';
+import { useContext } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 
 interface IButtonCommonProps {
@@ -14,21 +16,38 @@ export default function ButtonCommon({
     isGoogle = false,
     onClick
 }: IButtonCommonProps) {
+    const { isDark } = useContext(ThemeContext);
+
     return (
-        <>
-            <Button
-                className={`${
+        <Button
+            className={`
+                w-full rounded-none transition-colors duration-500 cursor-pointer
+                ${
                     isGoogle
-                        ? 'w-full rounded-none flex space-x-2 border-gray-300 hover:bg-gray-200 gap-0 cursor-pointer  active:bg-blue-400 transition-colors duration-500'
-                        : 'w-full bg-blue-400 hover:bg-blue-500 transition-colors duration-500 cursor-pointer rounded-none text-white'
-                }`}
-                size='lg'
-                type={type}
-                onClick={onClick}
-            >
-                {isGoogle && <FcGoogle className='text-xl mr-2' />}
-                {label}
-            </Button>
-        </>
+                        ? `
+                        flex space-x-2 gap-0 border 
+                        ${
+                            isDark
+                                ? 'border-gray-600 hover:bg-gray-700'
+                                : 'border-gray-300 hover:bg-gray-200'
+                        }
+                      `
+                        : `
+                        text-white 
+                        ${
+                            isDark
+                                ? 'bg-blue-500 hover:bg-blue-600'
+                                : 'bg-blue-400 hover:bg-blue-500'
+                        }
+                      `
+                }
+            `}
+            size='lg'
+            type={type}
+            onClick={onClick}
+        >
+            {isGoogle && <FcGoogle className='text-xl mr-2' />}
+            {label}
+        </Button>
     );
 }

@@ -24,12 +24,14 @@ export interface IPatient {
 
 interface IPatientState {
     list: IPatient[];
+    profile: IPatient | null;
     loading: boolean;
     error: string | null;
 }
 
 const initialState: IPatientState = {
     list: [],
+    profile: null,
     loading: false,
     error: null
 };
@@ -46,6 +48,21 @@ export const fetchPatients = createAsyncThunk<
     } catch (e: any) {
         const errMessage =
             e.response?.data?.errMessage || 'Server error occurred';
+        return rejectWithValue(errMessage);
+    }
+});
+export const fetchPatientProfile = createAsyncThunk<
+    IPatient,
+    void,
+    { rejectValue: string }
+>('patient/fetchProfile', async (_, { rejectWithValue }) => {
+    try {
+        const response = await api.get('/patient/profile');
+        const { data } = response.data;
+        return data;
+    } catch (e: any) {
+        const errMessage =
+            e.response?.data?.errMessage || 'Lỗi khi tải hồ sơ bệnh nhân';
         return rejectWithValue(errMessage);
     }
 });
@@ -69,6 +86,20 @@ const patientSlice = createSlice({
                 state.loading = false;
                 state.list = [];
                 state.error = action.payload || 'Server error occurred';
+            })
+            .addCase(fetchPatientProfile.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchPatientProfile.fulfilled, (state, action) => {
+                state.loading = false;
+                state.profile = action.payload;
+                state.error = null;
+            })
+            .addCase(fetchPatientProfile.rejected, (state, action) => {
+                state.loading = false;
+                state.profile = null;
+                state.error = action.payload || 'Lỗi khi tải hồ sơ';
             });
     }
 });

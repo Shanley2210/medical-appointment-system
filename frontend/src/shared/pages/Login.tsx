@@ -7,6 +7,9 @@ import { toast } from 'react-toastify';
 import { useAppDispatch } from '../stores/hooks';
 import { login } from '../stores/authSlice';
 import { useTranslation } from 'react-i18next';
+import { useContext, useState } from 'react';
+import LoadingCommon from '@/shared/components/LoadingCommon';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 interface LoginForm {
     emailOrPhone: string;
@@ -18,6 +21,8 @@ export default function Login() {
     const dispatch = useAppDispatch();
     const { t, i18n } = useTranslation();
     const language = i18n.language;
+    const [isLoading, setIsLoading] = useState(false);
+    const { isDark } = useContext(ThemeContext);
 
     const { register, handleSubmit } = useForm<LoginForm>({
         defaultValues: {
@@ -54,12 +59,41 @@ export default function Login() {
     };
 
     const onSubmit = async (data: LoginForm) => {
+        const inputVal = data.emailOrPhone.trim();
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const phoneRegex = /^[0-9]+$/;
+
+        const isEmail = emailRegex.test(inputVal);
+        const isPhone = phoneRegex.test(inputVal);
+
+        if (!isEmail && !isPhone) {
+            toast.error(
+                language === 'vi'
+                    ? 'Định dạng Email hoặc Số điện thoại không hợp lệ'
+                    : 'Invalid Email or Phone number format'
+            );
+            return;
+        }
+
+        if (isPhone) {
+            if (inputVal.length < 9 || inputVal.length > 11) {
+                toast.error(
+                    language === 'vi'
+                        ? 'Số điện thoại phải từ 9 đến 11 số'
+                        : 'Phone number must be between 9 and 11 digits'
+                );
+                return;
+            }
+        }
+
         const dataLogin = {
-            emailOrPhone: data.emailOrPhone,
+            emailOrPhone: inputVal,
             password: data.password
         };
 
         try {
+            setIsLoading(true);
             const resultAction = await dispatch(login(dataLogin));
 
             if (login.fulfilled.match(resultAction)) {
@@ -88,19 +122,37 @@ export default function Login() {
 
                 toast.error(errMessage);
             }
-        } catch (e) {
-            console.error('Lỗi gọi API Login:', e);
-            toast.error('Lỗi hệ thống hoặc mạng.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <div className='min-h-screen bg-white flex lg:flex-row items-center justify-center sm:p-4 select-none'>
+        <div
+            className={`
+                min-h-screen flex lg:flex-row items-center justify-center sm:p-4 select-none
+                ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-black'}
+            `}
+        >
             <div className='w-full max-w-md lg:w-1/2 lg:max-w-lg p-2 sm:p-4'>
-                <Card className='shadow-none border-gray-400 rounded-none'>
+                <Card
+                    className={`
+                        shadow-none rounded-none
+                        ${
+                            isDark
+                                ? 'bg-gray-800 border-gray-700'
+                                : 'bg-white border-gray-400'
+                        }
+                    `}
+                >
                     <CardContent className='p-5'>
                         <div className='flex justify-center mb-6'>
-                            <h2 className='text-2xl font-semibold text-gray-800'>
+                            <h2
+                                className={`
+                                    text-2xl font-semibold
+                                    ${isDark ? 'text-white' : 'text-gray-800'}
+                                `}
+                            >
                                 {t('login.tt')}
                             </h2>
                         </div>
@@ -117,32 +169,60 @@ export default function Login() {
                                 })}
                             />
 
-                            <InputCommon
-                                lable={t('login.pa')}
-                                type='password'
-                                isPassword={true}
-                                {...register('password', {
-                                    required: true,
-                                    minLength: 6
-                                })}
-                            />
+                            <div className='relative'>
+                                <InputCommon
+                                    lable={t('login.pa')}
+                                    type='password'
+                                    isPassword={true}
+                                    {...register('password', {
+                                        required: true,
+                                        minLength: 6
+                                    })}
+                                />
+                            </div>
 
                             <ButtonCommon label={t('login.si')} type='submit' />
                         </form>
 
                         <div className='flex items-center my-6'>
-                            <div className='grow border-t border-gray-400'></div>
+                            <div
+                                className={`grow border-t ${
+                                    isDark
+                                        ? 'border-gray-600'
+                                        : 'border-gray-400'
+                                }`}
+                            ></div>
 
-                            <span className='mx-4 text-gray-500 text-sm font-light'>
+                            <span
+                                className={`
+                                    mx-4 text-sm font-light
+                                    ${
+                                        isDark
+                                            ? 'text-gray-300'
+                                            : 'text-gray-500'
+                                    }
+                                `}
+                            >
                                 {t('login.or')}
                             </span>
 
-                            <div className='grow border-t border-gray-400'></div>
+                            <div
+                                className={`grow border-t ${
+                                    isDark
+                                        ? 'border-gray-600'
+                                        : 'border-gray-400'
+                                }`}
+                            ></div>
                         </div>
 
                         <ButtonCommon label={t('login.gg')} isGoogle={true} />
 
-                        <div className='text-center mt-6 text-sm'>
+                        <div
+                            className={`
+                                text-center mt-6 text-sm
+                                ${isDark ? 'text-gray-300' : 'text-black'}
+                            `}
+                        >
                             {t('login.do')}{' '}
                             <span
                                 className='text-blue-600 font-medium hover:underline cursor-pointer'
@@ -155,10 +235,13 @@ export default function Login() {
                 </Card>
             </div>
 
+            {isLoading && <LoadingCommon />}
+
             <div className='lg:flex lg:w-1/2 p-4 hidden'>
                 <img
                     src='https://doccure.dreamstechnologies.com/html/template/assets/img/login-banner.png'
                     alt=''
+                    className={`${isDark ? 'opacity-80' : ''}`}
                 />
             </div>
         </div>

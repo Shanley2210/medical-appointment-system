@@ -1,13 +1,14 @@
 import { Card, CardContent } from '@/components/ui/card';
 import InputCommon from '@patient/components/InputCommon';
 import ButtonCommon from '@patient/components/ButtonCommon';
-import { data, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { forgotPassword } from '@/shared/apis/authService';
-import { useState } from 'react';
+import { forgotPassword } from '@/shared/apis/patientService';
+import { useContext, useState } from 'react';
 import LoadingCommon from '@/shared/components/LoadingCommon';
+import { ThemeContext } from '@/shared/contexts/ThemeContext';
 
 interface ForgotPasswordForm {
     emailOrPhone: string;
@@ -18,16 +19,43 @@ export default function ForgotPassword() {
     const { t, i18n } = useTranslation();
     const language = i18n.language;
     const [isLoading, setIsLoading] = useState(false);
+    const { isDark } = useContext(ThemeContext);
 
     const { register, handleSubmit } = useForm<ForgotPasswordForm>();
 
     const onSubmit = async (data: ForgotPasswordForm) => {
+        const inputVal = data.emailOrPhone.trim();
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const phoneRegex = /^[0-9]+$/;
+
+        const isEmail = emailRegex.test(inputVal);
+        const isPhone = phoneRegex.test(inputVal);
+
+        if (!isEmail && !isPhone) {
+            toast.error(
+                language === 'vi'
+                    ? 'Định dạng Email hoặc Số điện thoại không hợp lệ'
+                    : 'Invalid Email or Phone number format'
+            );
+            return;
+        }
+
+        if (isPhone && (inputVal.length < 9 || inputVal.length > 11)) {
+            toast.error(
+                language === 'vi'
+                    ? 'Số điện thoại phải từ 9 đến 11 số'
+                    : 'Phone number must be between 9 and 11 digits'
+            );
+            return;
+        }
+
         try {
-            const dataForgotPassword = {
-                emailOrPhone: data.emailOrPhone
-            };
             setIsLoading(true);
-            const res = await forgotPassword(dataForgotPassword);
+
+            const payload = { emailOrPhone: inputVal };
+            const res = await forgotPassword(payload);
+
             if (res.data.errCode === 0) {
                 toast.success(
                     language === 'vi' ? res.data.viMessage : res.data.enMessage
@@ -35,7 +63,7 @@ export default function ForgotPassword() {
 
                 navigate('/reset-password', {
                     replace: true,
-                    state: { email: data.emailOrPhone }
+                    state: { email: inputVal }
                 });
             } else {
                 toast.error(
@@ -45,8 +73,6 @@ export default function ForgotPassword() {
                 );
             }
         } catch (e: any) {
-            console.error('Error submitting form:', e);
-
             toast.error(
                 language === 'vi' ? 'Lỗi phía Server' : 'Error from Server'
             );
@@ -62,17 +88,28 @@ export default function ForgotPassword() {
                     ? 'Email hoặc số điện thoại không được để trống'
                     : 'Email or Phone is required'
             );
-            return;
         }
     };
 
     return (
-        <div className='min-h-screen bg-white flex lg:flex-row items-center justify-center sm:p-4 select-none'>
+        <div
+            className={`min-h-screen flex lg:flex-row items-center justify-center sm:p-4 select-none ${
+                isDark ? 'bg-gray-900' : 'bg-white'
+            }`}
+        >
             <div className='w-full max-w-md lg:w-1/2 lg:max-w-lg p-2 sm:p-4'>
-                <Card className='shadow-none border-gray-400 rounded-none'>
+                <Card
+                    className={`shadow-none border-gray-400 rounded-none ${
+                        isDark ? 'bg-gray-800 text-white' : 'bg-white'
+                    }`}
+                >
                     <CardContent className='p-5'>
                         <div className='mb-6'>
-                            <h2 className='text-2xl font-semibold text-gray-800 text-center'>
+                            <h2
+                                className={`text-2xl font-semibold text-center ${
+                                    isDark ? 'text-white' : 'text-gray-800'
+                                }`}
+                            >
                                 {t('forgotPassword.tt')}
                             </h2>
 
@@ -98,7 +135,7 @@ export default function ForgotPassword() {
                         </form>
 
                         <div className='text-center mt-6 text-sm'>
-                            {t('forgotPassword.rp')}
+                            {t('forgotPassword.rp')}{' '}
                             <span
                                 className='text-blue-600 font-medium hover:underline cursor-pointer'
                                 onClick={() => navigate('/login')}
@@ -109,7 +146,9 @@ export default function ForgotPassword() {
                     </CardContent>
                 </Card>
             </div>
+
             {isLoading && <LoadingCommon />}
+
             <div className='lg:flex lg:w-1/2 p-4 hidden'>
                 <img
                     src='https://doccure.dreamstechnologies.com/html/template/assets/img/login-banner.png'

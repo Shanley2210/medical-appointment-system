@@ -10,8 +10,13 @@ import { ThemeContext } from '@/shared/contexts/ThemeContext';
 import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CiDark, CiLight } from 'react-icons/ci';
-import { FaFacebook, FaInstagram, FaYoutube } from 'react-icons/fa';
-import { MdLogin } from 'react-icons/md';
+import {
+    FaFacebook,
+    FaInstagram,
+    FaYoutube,
+    FaUserCircle
+} from 'react-icons/fa';
+import { MdLogin, MdLogout, MdPerson } from 'react-icons/md';
 import {
     RiArrowDownSLine,
     RiCloseLine,
@@ -19,12 +24,17 @@ import {
 } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 import Logo from '@shared/images/Logo.png';
+import { useAppDispatch, useAppSelector } from '@/shared/stores/hooks';
+import { selectAuth, clientLogout } from '@/shared/stores/authSlice';
 
 export default function PatientHeader() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { t, i18n } = useTranslation();
     const { isDark, toggleTheme } = useContext(ThemeContext);
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const { user, isAuthenticated } = useAppSelector(selectAuth);
+    const PATIENT_ROLE = 3;
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -32,12 +42,23 @@ export default function PatientHeader() {
     const changeLanguage = (lng: string) => {
         i18n.changeLanguage(lng);
     };
+
+    const handleLogout = () => {
+        dispatch(clientLogout());
+        navigate('/login');
+    };
+    const handleNavigateProfile = () => {
+        navigate('/profile');
+        setIsMenuOpen(!isMenuOpen);
+    };
+
     const langUI: any = {
         en: (
             <div className='flex items-center gap-1'>
                 <img
                     src='https://cdn-icons-png.flaticon.com/512/197/197374.png'
                     className='w-5 h-5'
+                    alt='EN'
                 />
                 <span>English</span>
                 <RiArrowDownSLine />
@@ -48,12 +69,54 @@ export default function PatientHeader() {
                 <img
                     src='https://cdn-icons-png.flaticon.com/512/197/197473.png'
                     className='w-5 h-5'
+                    alt='VI'
                 />
                 <span>Tiếng Việt</span>
                 <RiArrowDownSLine />
             </div>
         )
     };
+
+    const UserMenu = () => (
+        <DropdownMenu>
+            <DropdownMenuTrigger className='outline-none cursor-pointer'>
+                <div className='flex items-center gap-2'>
+                    <span
+                        className={`font-semibold max-w-[150px] truncate ${
+                            isDark ? 'text-white' : 'text-gray-700'
+                        }`}
+                    >
+                        {user?.name}
+                    </span>
+                    <RiArrowDownSLine />
+                </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+                align='center'
+                className='bg-white min-w-[200px] rounded-none border-none shadow'
+            >
+                <div className='px-2 py-1.5 text-sm font-semibold text-gray-900 border-b border-gray-200 mb-1'>
+                    <div className='text-xs font-normal text-gray-500 text-center'>
+                        {user?.email}
+                    </div>
+                </div>
+                <DropdownMenuItem
+                    className='cursor-pointer gap-2 hover:bg-gray-200 rounded-none'
+                    onClick={() => navigate('/profile')}
+                >
+                    <MdPerson className='text-lg' />
+                    <span>{t('homePage.pf')}</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                    className='cursor-pointer gap-2 text-red-600 focus:text-red-600 hover:bg-gray-200 rounded-none'
+                    onClick={handleLogout}
+                >
+                    <MdLogout className='text-lg' />
+                    <span>{t('homePage.lo')}</span>
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
 
     return (
         <header
@@ -92,7 +155,7 @@ export default function PatientHeader() {
 
                             <DropdownMenuContent
                                 align='center'
-                                className='bg-white border-none'
+                                className='bg-white border-none rounded-none'
                             >
                                 <DropdownMenuItem>
                                     <div
@@ -133,6 +196,7 @@ export default function PatientHeader() {
                 </div>
             </div>
 
+            {/* Main Header Desktop */}
             <div className='flex justify-between items-center py-3 px-4 md:px-20'>
                 <div className='md:hidden flex items-center z-50'>
                     <button
@@ -191,12 +255,17 @@ export default function PatientHeader() {
                         <div>{t('homePage.ap')}</div>
                     </div>
 
-                    <Button
-                        className='rounded-none p-3 cursor-pointer w-30 text-white font-bold bg-linear-to-r from-blue-500 to-blue-300 hover:brightness-110 active:brightness-90'
-                        onClick={() => navigate('/login')}
-                    >
-                        <MdLogin /> {t('homePage.lg')}
-                    </Button>
+                    {/* Logic hiển thị Login hoặc Avatar */}
+                    {isAuthenticated && user?.role === PATIENT_ROLE ? (
+                        <UserMenu />
+                    ) : (
+                        <Button
+                            className='rounded-none p-3 cursor-pointer w-30 text-white font-bold bg-linear-to-r from-blue-500 to-blue-300 hover:brightness-110 active:brightness-90'
+                            onClick={() => navigate('/login')}
+                        >
+                            <MdLogin /> {t('homePage.lg')}
+                        </Button>
+                    )}
                 </div>
             </div>
 
@@ -207,11 +276,26 @@ export default function PatientHeader() {
                     isMenuOpen ? 'translate-x-0' : '-translate-x-full'
                 }`}
             >
-                <div className='pt-16 flex bg-white flex-col border-none '>
+                <div className='pt-16 flex bg-white flex-col border-none h-full'>
                     <div className='absolute top-0 left-4'>
-                        <Button className='rounded-none p-3 w-20 h-8 cursor-pointer text-white font-bold bg-linear-to-r from-blue-500 to-blue-300 hover:brightness-110 active:brightness-90 mt-4 mr-2'>
-                            {t('homePage.lg')}
-                        </Button>
+                        {isAuthenticated && user?.role === PATIENT_ROLE ? (
+                            <div
+                                className={`mt-4 flex items-center cursor-pointer gap-2 font-bold ${
+                                    isDark ? 'text-gray-900' : 'text-blue-600'
+                                }`}
+                                onClick={handleNavigateProfile}
+                            >
+                                <FaUserCircle className='text-2xl' />
+                                <span>{user.name}</span>
+                            </div>
+                        ) : (
+                            <Button
+                                className='rounded-none p-3 w-20 h-8 cursor-pointer text-white font-bold bg-linear-to-r from-blue-500 to-blue-300 hover:brightness-110 active:brightness-90 mt-4 mr-2'
+                                onClick={() => navigate('/login')}
+                            >
+                                {t('homePage.lg')}
+                            </Button>
+                        )}
                     </div>
                     <div className='absolute top-6 right-4'>
                         <button onClick={toggleMenu} aria-label='Close menu'>
@@ -219,7 +303,11 @@ export default function PatientHeader() {
                         </button>
                     </div>
 
-                    <div className={`${isDark ? 'bg-gray-900' : 'bg-sky-800'}`}>
+                    <div
+                        className={`${
+                            isDark ? 'bg-gray-900' : 'bg-sky-800'
+                        } flex-1`}
+                    >
                         <div className='py-3 px-6 cursor-pointer'>
                             {t('homePage.ap')}
                         </div>
@@ -232,10 +320,18 @@ export default function PatientHeader() {
                         <div className='py-3 px-6 cursor-pointer'>
                             {t('homePage.sv')}
                         </div>
+                        {isAuthenticated && user?.role === PATIENT_ROLE && (
+                            <div
+                                className='py-3 px-6 cursor-pointer flex items-center gap-2 text-red-300 hover:text-red-100'
+                                onClick={handleLogout}
+                            >
+                                <MdLogout /> {t('homePage.lo', 'Đăng xuất')}
+                            </div>
+                        )}
                     </div>
 
                     <div
-                        className={`p-6 absolute bottom-0 text-sm flex flex-col gap-2 ${
+                        className={`p-6 text-sm flex flex-col gap-2 ${
                             isDark
                                 ? 'bg-gray-900 text-white'
                                 : 'bg-sky-800 text-white'

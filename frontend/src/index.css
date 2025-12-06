@@ -5,3 +5,8 @@
 * {
     font-family: 'Roboto', sans-serif;
 }
+
+input[type='date']::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    display: none;
+}

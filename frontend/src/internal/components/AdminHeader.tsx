@@ -35,7 +35,8 @@ export default function AdminHeader() {
             onClick: () => {
                 dispatch(clientLogout());
                 navigate('/login', { replace: true });
-            }
+            },
+            danger: true
         }
     ];
 

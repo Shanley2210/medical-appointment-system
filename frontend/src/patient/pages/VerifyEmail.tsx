@@ -1,12 +1,12 @@
 import { Card, CardContent } from '@/components/ui/card';
 import ButtonCommon from '@patient/components/ButtonCommon';
 import OTPInput from '../components/OTPInput';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import LoadingCommon from '@/shared/components/LoadingCommon';
 import { toast } from 'react-toastify';
-import { resendOtp, verifyEmail } from '@/shared/apis/authService';
+import { resendOtp, verifyEmail } from '@/shared/apis/patientService';
 
 export default function VerifyEmail() {
     const location = useLocation();
@@ -17,7 +17,6 @@ export default function VerifyEmail() {
     const [otp, setOtp] = useState('');
     const [verifyTime, setVerifyTime] = useState(180);
     const [isLoading, setIsLoading] = useState(false);
-    const navigate = useNavigate();
 
     const formatTime = (sec: number) => {
         const m = Math.floor(sec / 60);
@@ -87,7 +86,7 @@ export default function VerifyEmail() {
                     language === 'vi' ? res.data.viMessage : res.data.enMessage
                 );
 
-                navigate('/', { replace: true });
+                window.location.href = '/profile/create-profile';
             } else {
                 toast.error(
                     language === 'vi'

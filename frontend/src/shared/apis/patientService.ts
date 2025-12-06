@@ -19,3 +19,11 @@ export const verifyEmail = async (data: Record<string, any>) => {
 export const resendOtp = async (data: Record<string, any>) => {
     return await api.post('/auth/resend-otp', data);
 };
+
+export const createProfile = async (data: Record<string, any>) => {
+    return await api.post('/patient/profile', data);
+};
+
+export const updateProfile = async (data: Record<string, any>) => {
+    return await api.put('/patient/profile', data);
+};
